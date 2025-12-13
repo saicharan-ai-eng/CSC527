@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Rep – Auctions{% endblock %}
+
+{% block content %}
+<h1>Customer Rep Tools – Auctions</h1>
+<p class="muted">View and cancel problematic auctions.</p>
+
+<div class="section">
+    <h2>Filter Auctions</h2>
+    <form method="get" action="{{ url_for('rep_auctions') }}">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+            <div>
+                <label>
+                    Status
+                    <select name="status">
+                        <option value="">Any</option>
+                        <option value="scheduled" {% if status == "scheduled" %}selected{% endif %}>Scheduled</option>
+                        <option value="running" {% if status == "running" %}selected{% endif %}>Running</option>
+                        <option value="ended" {% if status == "ended" %}selected{% endif %}>Ended</option>
+                        <option value="cancelled" {% if status == "cancelled" %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </label>
+            </div>
+            <div>
+                <label>
+                    Seller username
+                    <input name="seller" value="{{ seller }}">
+                </label>
+            </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+            <button type="submit">Apply filters</button>
+            <a href="{{ url_for('rep_auctions') }}" style="margin-left: 0.5rem; font-size: 0.9rem;">
+                Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="section">
+    <h2>Auctions</h2>
+    {% if auctions %}
+        <p class="muted">{{ auctions|length }} auction(s) shown (max 100).</p>
+        {% for a in auctions %}
+            <div class="item-row">
+                <div class="item-title">
+                    <a href="{{ url_for('view_auction', auction_id=a.auction_id) }}">
+                        {{ a.item.title }}
+                    </a>
+                    <span class="tag">{{ a.status }}</span>
+                </div>
+                <div class="item-meta">
+                    Auction #{{ a.auction_id }} · Seller: {{ a.seller.username }}
+                </div>
+                <div class="item-meta">
+                    Starting: ${{ "%.2f"|format(a.starting_price) }}
+                    · Current: ${{ "%.2f"|format(a.current_price) }}
+                    {% if a.final_price %}
+                        · Final: ${{ "%.2f"|format(a.final_price) }}
+                    {% endif %}
+                </div>
+                <div class="item-meta">
+                    Starts: {{ a.start_time }}
+                    · Ends: {{ a.end_time }}
+                </div>
+                {% if a.status in ["running", "scheduled"] %}
+                    <form method="post" action="{{ url_for('rep_cancel_auction', auction_id=a.auction_id) }}">
+                        <button type="submit">Cancel Auction</button>
+                    </form>
+                {% else %}
+                    <span class="muted">Cannot cancel ({{ a.status }}).</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No auctions match these filters.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Alert Matches – BuyMe{% endblock %}
+
+{% block content %}
+<h1>Matches for Alert #{{ alert.alert_id }}</h1>
+
+<p class="muted">
+    Showing running auctions that match this alert.
+    <a href="{{ url_for('list_alerts') }}">Back to My Alerts</a>
+</p>
+
+{% if matches %}
+    <ul class="match-list">
+        {% for a in matches %}
+            <li class="match-row">
+                <div class="match-main">
+                    <a href="{{ url_for('view_auction', auction_id=a.auction_id) }}">
+                        {{ a.item.title }}
+                    </a>
+                    <div class="match-meta">
+                        Category: {{ a.item.category }}
+                        {% if a.item.brand %}· Brand: {{ a.item.brand }}{% endif %}
+                        {% if a.item.platform %}· Platform: {{ a.item.platform }}{% endif %}
+                    </div>
+                </div>
+                <div class="match-price">
+                    ${{ "%.2f"|format(a.current_price) }}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No running auctions currently match this alert.</p>
+{% endif %}
+
+<style>
+.match-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+.match-row {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+}
+.match-main a {
+    font-weight: 600;
+}
+.match-meta {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+.match-price {
+    font-weight: 600;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Items – BuyMe{% endblock %}
+
+{% block content %}
+<h1>Browse Items</h1>
+<p class="muted">
+    Filter gaming consoles, games, and accessories by category, platform, brand,
+    condition, and price.
+</p>
+
+<div class="section">
+    <h2>Search Filters</h2>
+
+    <form method="get" action="{{ url_for('list_items') }}">
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        ">
+            <div>
+                <label>
+                    Category
+                    <select name="category">
+                        <option value="">Any</option>
+                        <option value="console"
+                            {% if filters.category == "console" %}selected{% endif %}>
+                            Console
+                        </option>
+                        <option value="game"
+                            {% if filters.category == "game" %}selected{% endif %}>
+                            Game
+                        </option>
+                        <option value="accessory"
+                            {% if filters.category == "accessory" %}selected{% endif %}>
+                            Accessory
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Platform
+                    <input name="platform" value="{{ filters.platform }}">
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Brand
+                    <input name="brand" value="{{ filters.brand }}">
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Condition
+                    <select name="condition">
+                        <option value="">Any</option>
+                        <option value="new"
+                            {% if filters.condition == "new" %}selected{% endif %}>
+                            New
+                        </option>
+                        <option value="like_new"
+                            {% if filters.condition == "like_new" %}selected{% endif %}>
+                            Like New
+                        </option>
+                        <option value="good"
+                            {% if filters.condition == "good" %}selected{% endif %}>
+                            Good
+                        </option>
+                        <option value="fair"
+                            {% if filters.condition == "fair" %}selected{% endif %}>
+                            Fair
+                        </option>
+                        <option value="poor"
+                            {% if filters.condition == "poor" %}selected{% endif %}>
+                            Poor
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Min price
+                    <input name="min_price"
+                           type="number"
+                           step="0.01"
+                           value="{{ filters.min_price }}">
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Max price
+                    <input name="max_price"
+                           type="number"
+                           step="0.01"
+                           value="{{ filters.max_price }}">
+                </label>
+            </div>
+        </div>
+
+        <div style="margin-top: 0.75rem;">
+            <button type="submit">Apply filters</button>
+            <a href="{{ url_for('list_items') }}"
+               style="margin-left: 0.5rem; font-size: 0.9rem;">
+                Clear filters
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="section">
+    <h2>Results</h2>
+
+    {% if items %}
+        <p class="muted">{{ items|length }} item(s) found.</p>
+
+        {% for item, auction in items %}
+            <div class="item-row">
+
+                <div class="item-title">
+                    <a href="{{ url_for('view_item', item_id=item.item_id) }}">
+                        {{ item.title }}
+                    </a>
+                    <span class="tag">{{ item.category }}</span>
+                </div>
+
+                <div class="item-meta">
+                    {% if item.brand %}Brand: {{ item.brand }} · {% endif %}
+                    {% if item.platform %}Platform: {{ item.platform }} · {% endif %}
+                    Condition: {{ item.item_condition }}
+                </div>
+
+                <div class="item-meta">
+                    Base price: ${{ "%.2f"|format(item.base_price) }}
+
+                    {% if auction %}
+                        · Auction #{{ auction.auction_id }} ({{ auction.status }})
+
+                        {% if auction.current_price %}
+                            · Current:
+                            ${{ "%.2f"|format(auction.current_price) }}
+                        {% endif %}
+                    {% else %}
+                        · No auction yet
+                    {% endif %}
+                </div>
+
+                <div class="item-actions">
+                    {% if auction %}
+                        <a href="{{ url_for('view_auction', auction_id=auction.auction_id) }}">
+                            View Auction
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('create_auction', item_id=item.item_id) }}">
+                            Create Auction
+                        </a>
+                    {% endif %}
+
+                    <a href="{{ url_for('view_item', item_id=item.item_id) }}">
+                        View Item
+                    </a>
+                </div>
+
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <p>No items match your filters.</p>
+    {% endif %}
+</div>
+{% endblock %}

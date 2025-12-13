@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Rep – User Search{% endblock %}
+
+{% block content %}
+<h1>Customer Rep Tools – Users</h1>
+<p class="muted">Search for users by username or email. Reset passwords if needed.</p>
+
+<div class="section">
+    <h2>Search Users</h2>
+    <form method="get" action="{{ url_for('rep_users') }}">
+        <label>
+            Username or email
+            <input name="q" value="{{ query }}">
+        </label>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="section">
+    <h2>Results</h2>
+    {% if query and results %}
+        <p class="muted">{{ results|length }} user(s) match "{{ query }}".</p>
+        {% for u in results %}
+            <div class="item-row">
+                <div class="item-title">
+                    {{ u.username }} (ID {{ u.user_id }})
+                </div>
+                <div class="item-meta">
+                    Email: {{ u.email }} · Role: {{ u.role }} · Active: {{ "Yes" if u.is_active else "No" }}
+                </div>
+                <div class="item-actions">
+                    <a href="{{ url_for('rep_reset_password', user_id=u.user_id) }}">
+                        Reset Password
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% elif query %}
+        <p>No users found for "{{ query }}".</p>
+    {% else %}
+        <p>Enter a username or email to search.</p>
+    {% endif %}
+</div>
+{% endblock %}

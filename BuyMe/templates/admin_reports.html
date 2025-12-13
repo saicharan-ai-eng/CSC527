@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Reports – BuyMe{% endblock %}
+
+{% block content %}
+<h1>Admin – Sales Reports</h1>
+<p class="muted">
+    Summary of marketplace earnings by category, seller, and item.
+</p>
+
+<div class="section">
+    <h2>Total Earnings</h2>
+    <p>
+        Total revenue from all completed sales:
+        <strong>${{ "%.2f"|format(total_earnings) }}</strong>
+    </p>
+</div>
+
+<div class="section">
+    <h2>Earnings by Category</h2>
+    {% if earnings_by_category %}
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding: 0.3rem;">Category</th>
+                    <th style="text-align:right; padding: 0.3rem;">Total Revenue</th>
+                    <th style="text-align:right; padding: 0.3rem;"># of Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat, total, count in earnings_by_category %}
+                    <tr>
+                        <td style="padding: 0.3rem;">{{ cat }}</td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            ${{ "%.2f"|format(total) }}
+                        </td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            {{ count }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales recorded yet.</p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <h2>Earnings by Seller</h2>
+    {% if earnings_by_seller %}
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding: 0.3rem;">Seller</th>
+                    <th style="text-align:right; padding: 0.3rem;">Total Revenue</th>
+                    <th style="text-align:right; padding: 0.3rem;"># of Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_id, username, total, count in earnings_by_seller %}
+                    <tr>
+                        <td style="padding: 0.3rem;">
+                            {{ username }} (ID {{ user_id }})
+                        </td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            ${{ "%.2f"|format(total) }}
+                        </td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            {{ count }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales recorded yet.</p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <h2>Top-Selling Items</h2>
+    {% if top_items %}
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding: 0.3rem;">Item</th>
+                    <th style="text-align:left; padding: 0.3rem;">Category</th>
+                    <th style="text-align:right; padding: 0.3rem;">Total Revenue</th>
+                    <th style="text-align:right; padding: 0.3rem;"># of Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item_id, title, category, total, count in top_items %}
+                    <tr>
+                        <td style="padding: 0.3rem;">
+                            {{ title }} (ID {{ item_id }})
+                        </td>
+                        <td style="padding: 0.3rem;">{{ category }}</td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            ${{ "%.2f"|format(total) }}
+                        </td>
+                        <td style="padding: 0.3rem; text-align:right;">
+                            {{ count }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales recorded yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

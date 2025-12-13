@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}My Auctions – BuyMe{% endblock %}
+
+{% block content %}
+<h1>My Auctions</h1>
+<p class="muted">All auctions where you are the seller.</p>
+
+{% if auctions %}
+    {% for a in auctions %}
+        <div class="item-row">
+            <div class="item-title">
+                <a href="{{ url_for('view_auction', auction_id=a.auction_id) }}">
+                    {{ a.item.title }}
+                </a>
+                <span class="tag">{{ a.status }}</span>
+            </div>
+
+            <div class="item-meta">
+                Starting: ${{ "%.2f"|format(a.starting_price) }}
+                · Current: ${{ "%.2f"|format(a.current_price) }}
+                {% if a.final_price %}
+                    · Final: ${{ "%.2f"|format(a.final_price) }}
+                {% endif %}
+            </div>
+
+            <div class="item-meta">
+                Bids: {{ a.bids.count() }}
+                · Starts: {{ a.start_time }}
+                · Ends: {{ a.end_time }}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>You haven’t created any auctions yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Support – BuyMe{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<div class="dialog-overlay" id="error-dialog">
+    <div class="dialog-box">
+        <h2>Could not submit request</h2>
+        <p>{{ error_message }}</p>
+        <button type="button"
+                onclick="document.getElementById('error-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+{% if success_message %}
+<div class="dialog-overlay" id="success-dialog">
+    <div class="dialog-box">
+        <h2>Request submitted</h2>
+        <p>{{ success_message }}</p>
+        <button type="button"
+                onclick="document.getElementById('success-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<h1>Contact Support</h1>
+<p class="muted">
+    Send a question or request to a customer representative. They can help with
+    account issues, auctions, bids, or other problems.
+</p>
+
+<form method="post" action="{{ url_for('support') }}">
+    <label>
+        Subject
+        <input name="subject" required placeholder="Auction issue, account problem, etc.">
+    </label>
+
+    <label>
+        Message
+        <textarea name="message" rows="4" required
+                  placeholder="Describe your issue or question in detail."></textarea>
+    </label>
+
+    <button type="submit">Submit Request</button>
+</form>
+
+<p style="margin-top:1.5rem;">
+    <a href="{{ url_for('my_support_requests') }}">View my previous support requests</a>
+</p>
+{% endblock %}

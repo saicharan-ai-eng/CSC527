@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Support Requests – Rep View{% endblock %}
+
+{% block content %}
+<h1>Support Requests</h1>
+<p class="muted">
+    Customer representative view of all user questions and problems.
+</p>
+
+{% if requests %}
+    <ul class="support-list">
+        {% for r in requests %}
+            <li class="support-row">
+                <div class="support-main">
+                    <div>
+                        <strong>#{{ r.request_id }} – {{ r.subject }}</strong>
+                        <span class="badge {{ r.status }}">
+                            {{ r.status|capitalize }}
+                        </span>
+                    </div>
+                    <div class="support-message">
+                        <strong>User:</strong> {{ r.user.username }} (ID {{ r.user_id }})
+                    </div>
+                    <div class="support-preview">
+                        {{ r.message[:120] }}{% if r.message|length > 120 %}...{% endif %}
+                    </div>
+                </div>
+                <div class="support-actions">
+                    <a href="{{ url_for('rep_support_detail', request_id=r.request_id) }}">
+                        View / Respond
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No support requests found.</p>
+{% endif %}
+
+<style>
+.support-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+.support-row {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+.support-main {
+    max-width: 70%;
+}
+.support-message {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+.support-preview {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+.support-actions a {
+    font-size: 0.9rem;
+}
+.badge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+.badge.open {
+    background: rgba(251,191,36,0.2);
+    color: #facc15;
+}
+.badge.resolved {
+    background: rgba(22,163,74,0.2);
+    color: #4ade80;
+}
+</style>
+{% endblock %}

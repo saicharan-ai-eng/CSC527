@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Create Customer Rep – BuyMe{% endblock %}
+
+{% block content %}
+<h1>Create Customer Representative</h1>
+<p class="muted">
+    Only the admin can create customer representative accounts. These users can
+    help end-users manage accounts and intervene in auctions and bids.
+</p>
+
+{% if error_message %}
+<div class="dialog-overlay" id="error-dialog">
+    <div class="dialog-box">
+        <h2>Could not create representative</h2>
+        <p>{{ error_message }}</p>
+        <button type="button" onclick="document.getElementById('error-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+{% if success_message %}
+<div class="dialog-overlay" id="success-dialog">
+    <div class="dialog-box" style="border-color:#4ade80;">
+        <h2>Representative created</h2>
+        <p>{{ success_message }}</p>
+        <button type="button" onclick="document.getElementById('success-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('create_rep') }}">
+    <label>
+        Username
+        <input name="username" required>
+    </label>
+
+    <label>
+        Email
+        <input name="email" type="email" required>
+    </label>
+
+    <label>
+        Temporary password
+        <input name="password" type="password" required>
+    </label>
+
+    <button type="submit">Create representative</button>
+</form>
+{% endblock %}

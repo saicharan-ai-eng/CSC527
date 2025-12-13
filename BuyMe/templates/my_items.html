@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}My Items – BuyMe{% endblock %}
+
+{% block content %}
+<h1>My Items</h1>
+<p class="muted">All items you have listed on BuyMe.</p>
+
+{% if items %}
+    {% for item, auction in items %}
+        <div class="item-row">
+            <div class="item-title">
+                <a href="{{ url_for('view_item', item_id=item.item_id) }}">
+                    {{ item.title }}
+                </a>
+                <span class="tag">{{ item.category }}</span>
+            </div>
+
+            <div class="item-meta">
+                {% if item.brand %}Brand: {{ item.brand }} · {% endif %}
+                {% if item.platform %}Platform: {{ item.platform }} · {% endif %}
+                Condition: {{ item.item_condition }}
+            </div>
+
+            <div class="item-meta">
+                Base price: ${{ "%.2f"|format(item.base_price) }}
+                {% if auction %}
+                    · Auction #{{ auction.auction_id }} ({{ auction.status }})
+                    {% if auction.current_price %}
+                        · Current: ${{ "%.2f"|format(auction.current_price) }}
+                    {% endif %}
+                {% else %}
+                    · No auction yet
+                {% endif %}
+            </div>
+
+            <div class="item-actions">
+                {% if auction %}
+                    <a href="{{ url_for('view_auction', auction_id=auction.auction_id) }}">
+                        View Auction
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('create_auction') }}?item_id={{ item.item_id }}">
+                        Create Auction
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('view_item', item_id=item.item_id) }}">
+                    View Item
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>You haven’t created any items yet.</p>
+    <p>
+        <a href="{{ url_for('create_item') }}">Create your first item</a>
+    </p>
+{% endif %}
+{% endblock %}

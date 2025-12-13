@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}BuyMe – A Gaming Marketplace{% endblock %}
+
+{% block content %}
+
+{# ---------- ALERT NOTIFICATION BANNER ---------- #}
+{% if current_user and alert_match_count and alert_match_count > 0 %}
+<div class="alert-banner">
+    🎯 You have {{ alert_match_count }} auction{{ "s" if alert_match_count != 1 else "" }} matching your alerts.
+    <a href="{{ url_for('list_alerts') }}">View Alerts</a>
+</div>
+{% endif %}
+
+<div class="landing-container">
+    <div class="landing-logo">
+        <div class="brand-pill">
+            <span class="brand-mark">🎮</span>
+            <span class="brand-text-main">BuyMe</span>
+        </div>
+        <p class="brand-subtitle">A Gaming Marketplace</p>
+    </div>
+
+    {% if not current_user %}
+        <div class="landing-actions">
+            <a href="{{ url_for('login') }}" class="landing-btn primary">Login</a>
+            <a href="{{ url_for('register') }}" class="landing-btn secondary">Register</a>
+            <a href="{{ url_for('list_items') }}" class="landing-btn ghost">Browse Items</a>
+        </div>
+
+        <p class="landing-footnote">
+            Bid on consoles, games, and accessories with automatic bidding and alerts.
+        </p>
+    {% else %}
+        <div class="landing-actions">
+            <a href="{{ url_for('list_items') }}" class="landing-btn primary">Browse Items</a>
+            <a href="{{ url_for('my_items') }}" class="landing-btn secondary">My Items</a>
+            <a href="{{ url_for('my_bids') }}" class="landing-btn ghost">My Bids</a>
+            <a href="{{ url_for('my_auctions') }}" class="landing-btn ghost">My Auctions</a>
+
+            {# ---------- MY ALERTS NAV BADGE ---------- #}
+            <a href="{{ url_for('list_alerts') }}" class="landing-btn ghost">
+                My Alerts{% if alert_match_count and alert_match_count > 0 %} ({{ alert_match_count }}){% endif %}
+            </a>
+        </div>
+
+        <p class="landing-footnote">
+            Welcome back, <strong>{{ current_user.username }}</strong>.
+        </p>
+    {% endif %}
+</div>
+
+<style>
+/* --- ALERT BANNER --- */
+.alert-banner {
+    margin: 1rem auto;
+    max-width: 640px;
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.75rem;
+    background: rgba(34,197,94,0.16);
+    border: 1px solid rgba(34,197,94,0.45);
+    font-size: 0.9rem;
+    color: #065f46;
+    animation: fadeIn 0.3s ease-out;
+}
+.alert-banner a {
+    margin-left: 0.5rem;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.landing-container {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.landing-logo {
+    margin-bottom: 2rem;
+}
+
+.brand-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.3rem;
+    border-radius: 999px;
+    background: radial-gradient(circle at 0% 0%, rgba(96,165,250,0.25), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(244,63,94,0.18), transparent 55%);
+    border: 1px solid rgba(148,163,184,0.4);
+    box-shadow: 0 0 25px rgba(37,99,235,0.4);
+}
+
+.brand-mark {
+    font-size: 1.4rem;
+}
+
+.brand-text-main {
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #60a5fa, #a855f7, #f97373);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow:
+        0 0 8px rgba(59,130,246,0.7),
+        0 0 18px rgba(236,72,153,0.6);
+}
+
+.brand-subtitle {
+    margin-top: 0.8rem;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #9ca3af;
+}
+
+.landing-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.landing-btn {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+}
+
+.landing-btn.primary {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #f9fafb;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.5);
+}
+
+.landing-btn.secondary {
+    background: #111827;
+    color: #e5e7eb;
+    border-color: #374151;
+}
+
+.landing-btn.ghost {
+    background: transparent;
+    color: #9ca3af;
+    border-color: #4b5563;
+}
+
+.landing-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(15,23,42,0.9);
+}
+
+.landing-btn.primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #4338ca);
+}
+
+.landing-btn.secondary:hover {
+    background: #1f2937;
+}
+
+.landing-btn.ghost:hover {
+    background: rgba(15,23,42,0.85);
+    color: #e5e7eb;
+}
+
+.landing-footnote {
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+{% endblock %}

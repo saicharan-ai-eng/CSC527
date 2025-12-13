@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}My Alerts – BuyMe{% endblock %}
+
+{% block content %}
+<h1>My Alerts</h1>
+<p class="muted">
+    These alerts help you quickly find auctions that match your saved criteria.
+</p>
+
+<p>
+    <a href="{{ url_for('create_alert') }}">Create New Alert</a>
+</p>
+
+{% if alerts %}
+    <ul class="alert-list">
+        {% for a in alerts %}
+            {% set parts = [] %}
+            {% if a.category %}
+                {% set _ = parts.append("Category: " ~ a.category) %}
+            {% endif %}
+            {% if a.platform %}
+                {% set _ = parts.append("Platform: " ~ a.platform) %}
+            {% endif %}
+            {% if a.brand %}
+                {% set _ = parts.append("Brand: " ~ a.brand) %}
+            {% endif %}
+            {% if a.min_price is not none %}
+                {% set _ = parts.append("Min: $" ~ ("%.2f"|format(a.min_price))) %}
+            {% endif %}
+            {% if a.max_price is not none %}
+                {% set _ = parts.append("Max: $" ~ ("%.2f"|format(a.max_price))) %}
+            {% endif %}
+            {% if a.item_condition %}
+                {% set _ = parts.append("Condition: " ~ a.item_condition) %}
+            {% endif %}
+            {% if a.keyword %}
+                {% set _ = parts.append("Keyword: " ~ a.keyword) %}
+            {% endif %}
+
+            {% set desc = parts|join(", ") if parts else "(No filters – matches all running auctions)" %}
+
+            <li class="alert-row">
+                <div class="alert-main">
+                    <strong>Alert #{{ a.alert_id }}</strong>
+                    <span class="alert-desc">{{ desc }}</span>
+                </div>
+                <div class="alert-actions">
+                    <a href="{{ url_for('view_alert_matches', alert_id=a.alert_id) }}">
+                        View Matches
+                    </a>
+
+                    <form method="post"
+                          action="{{ url_for('delete_alert', alert_id=a.alert_id) }}"
+                          style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You don't have any alerts yet.</p>
+    <p>
+        <a href="{{ url_for('create_alert') }}">Create your first alert</a> to track
+        consoles, games, or accessories you care about.
+    </p>
+{% endif %}
+
+<style>
+.alert-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+.alert-row {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+}
+.alert-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.alert-desc {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+.alert-actions a,
+.alert-actions button {
+    font-size: 0.85rem;
+}
+</style>
+{% endblock %}

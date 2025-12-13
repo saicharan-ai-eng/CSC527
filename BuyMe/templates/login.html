@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Login – BuyMe{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<div class="dialog-overlay" id="error-dialog">
+    <div class="dialog-box">
+        <h2>Login Failed</h2>
+        <p>{{ error_message }}</p>
+        <button type="button" onclick="document.getElementById('error-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<h1>Login</h1>
+<p class="muted">Log in to bid on gaming consoles, games, and accessories.</p>
+
+<form method="post" action="{{ url_for('login') }}">
+    <label>
+        Username
+        <input name="username" required>
+    </label>
+
+    <label>
+        Password
+        <input name="password" type="password" required>
+    </label>
+
+    <button type="submit">Log in</button>
+</form>
+{% endblock %}

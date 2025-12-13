@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Support Requests – BuyMe{% endblock %}
+
+{% block content %}
+<h1>My Support Requests</h1>
+<p class="muted">
+    Here are your questions and the responses from customer representatives.
+</p>
+
+<p>
+    <a href="{{ url_for('support') }}">Submit a new request</a>
+</p>
+
+{% if requests %}
+    <ul class="support-list">
+        {% for r in requests %}
+            <li class="support-row">
+                <div class="support-main">
+                    <div>
+                        <strong>#{{ r.request_id }} – {{ r.subject }}</strong>
+                        <span class="badge {{ r.status }}">
+                            {{ r.status|capitalize }}
+                        </span>
+                    </div>
+                    <div class="support-message">
+                        <strong>You:</strong> {{ r.message }}
+                    </div>
+                    {% if r.response %}
+                        <div class="support-response">
+                            <strong>Rep:</strong> {{ r.response }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="support-meta">
+                    <div>Created: {{ r.created_at }}</div>
+                    {% if r.responded_at %}
+                        <div>Responded: {{ r.responded_at }}</div>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not submitted any support requests yet.</p>
+{% endif %}
+
+<style>
+.support-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+.support-row {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+.support-main {
+    max-width: 70%;
+}
+.support-message,
+.support-response {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+.support-message {
+    color: #e5e7eb;
+}
+.support-response {
+    color: #bbf7d0;
+}
+.support-meta {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    text-align: right;
+}
+.badge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+.badge.open {
+    background: rgba(251,191,36,0.2);
+    color: #facc15;
+}
+.badge.resolved {
+    background: rgba(22,163,74,0.2);
+    color: #4ade80;
+}
+</style>
+{% endblock %}

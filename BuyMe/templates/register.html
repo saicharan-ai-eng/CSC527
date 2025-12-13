@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Register – BuyMe{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<div class="dialog-overlay" id="error-dialog">
+    <div class="dialog-box">
+        <h2>Registration Error</h2>
+        <p>{{ error_message }}</p>
+        <button type="button" onclick="document.getElementById('error-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<h1>Create an Account</h1>
+<p class="muted">Sign up to sell and bid on gaming gear.</p>
+
+<form method="post" action="{{ url_for('register') }}">
+    <label>
+        Username
+        <input name="username" required>
+    </label>
+
+    <label>
+        Email
+        <input name="email" type="email" required>
+    </label>
+
+    <label>
+        Full name
+        <input name="full_name">
+    </label>
+
+    <label>
+        Password
+        <input name="password" type="password" required>
+    </label>
+
+    <label>
+        Confirm password
+        <input name="confirm_password" type="password" required>
+    </label>
+
+    <button type="submit">Create account</button>
+</form>
+{% endblock %}

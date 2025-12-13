@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}BuyMe Gaming Marketplace{% endblock %}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #0b1020;
+            color: #f5f5f5;
+        }
+        header {
+            background: #111827;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid #1f2937;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        nav {
+            margin-top: 0.4rem;
+        }
+        nav a {
+            display: inline-block;
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            margin-right: 0.5rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .nav-link {
+            color: #9ca3af;
+            background: transparent;
+        }
+        .nav-link:hover {
+            color: #ffffff;
+            background: #1f2937;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #1d4ed8;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #111827;
+            color: #e5e7eb;
+            border-color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #1f2937;
+        }
+        .container {
+            max-width: 900px;
+            margin: 1.5rem auto 2rem;
+            padding: 1.5rem;
+            background: #111827;
+            border-radius: 0.75rem;
+            border: 1px solid #1f2937;
+        }
+        h1, h2, h3 {
+            color: #e5e7eb;
+        }
+        a {
+            color: #60a5fa;
+        }
+        a:hover {
+            color: #93c5fd;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            background: #1f2937;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+        }
+        .section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1f2937;
+        }
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        .muted {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+        ul {
+            padding-left: 1.2rem;
+        }
+        button {
+            padding: 0.4rem 0.9rem;
+            border-radius: 0.4rem;
+            border: none;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        input, select, textarea {
+            padding: 0.35rem 0.5rem;
+            border-radius: 0.35rem;
+            border: 1px solid #374151;
+            background: #020617;
+            color: #f9fafb;
+            margin-bottom: 0.4rem;
+            width: 100%;
+            max-width: 320px;
+        }
+        label {
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        form {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .error {
+            color: #f97373;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .item-row {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #1f2937;
+        }
+        .item-row:last-of-type {
+            border-bottom: none;
+        }
+        .item-title {
+            font-weight: 600;
+        }
+        .item-meta {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+        .item-actions a {
+            font-size: 0.8rem;
+            margin-right: 0.4rem;
+        }
+
+        .dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .dialog-box {
+            background: #020617;
+            border-radius: 0.75rem;
+            border: 1px solid #1f2937;
+            padding: 1.25rem 1.5rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+        .dialog-box h2 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .dialog-box p {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: #e5e7eb;
+        }
+        
+        .bid-auto {
+            padding: 0.1rem 0.4rem;
+            border-radius: 999px;
+            background: #1f2937;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #93c5fd;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>BuyMe Gaming Marketplace</h1>
+    <nav>
+        <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('list_items') }}" class="nav-link">Browse Items</a>
+
+        {% if current_user %}
+            <a href="{{ url_for('my_items') }}" class="nav-link">My Items</a>
+            <a href="{{ url_for('my_bids') }}" class="nav-link">My Bids</a>
+            <a href="{{ url_for('my_auctions') }}" class="nav-link">My Auctions</a>
+            <a href="{{ url_for('list_alerts') }}" class="nav-link">My Alerts</a>
+            <a href="{{ url_for('account') }}" class="nav-link">My Account</a>
+
+            {# User support links #}
+            <a href="{{ url_for('support') }}" class="nav-link">Support</a>
+            <a href="{{ url_for('my_support_requests') }}" class="nav-link">My Support</a>
+
+            {# Admin-only tools #}
+            {% if current_user.role == "admin" %}
+                <a href="{{ url_for('create_rep') }}" class="nav-link">Create Rep</a>
+                <a href="{{ url_for('admin_reports') }}" class="nav-link">Reports</a>
+            {% endif %}
+
+            {# Rep/Admin tools #}
+            {% if current_user.role in ["rep", "admin"] %}
+                <a href="{{ url_for('rep_users') }}" class="nav-link">Rep Tools</a>
+                <a href="{{ url_for('rep_support_list') }}" class="nav-link">Rep Support</a>
+            {% endif %}
+
+            <a href="{{ url_for('create_item') }}" class="nav-link">New Item</a>
+
+            <a href="{{ url_for('logout') }}" class="btn-secondary">
+                Logout ({{ current_user.username }})
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn-primary">Login</a>
+            <a href="{{ url_for('register') }}" class="btn-secondary">Register</a>
+        {% endif %}
+    </nav>
+</header>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

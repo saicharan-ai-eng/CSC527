@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Rep – Bids{% endblock %}
+
+{% block content %}
+<h1>Customer Rep Tools – Bids</h1>
+<p class="muted">Inspect and remove suspicious bids.</p>
+
+<div class="section">
+    <h2>Filter Bids</h2>
+    <form method="get" action="{{ url_for('rep_bids') }}">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+            <div>
+                <label>
+                    Bidder username
+                    <input name="bidder" value="{{ bidder }}">
+                </label>
+            </div>
+            <div>
+                <label>
+                    Auction ID
+                    <input name="auction_id" value="{{ auction_id }}">
+                </label>
+            </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+            <button type="submit">Apply filters</button>
+            <a href="{{ url_for('rep_bids') }}" style="margin-left: 0.5rem; font-size: 0.9rem;">
+                Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="section">
+    <h2>Bids</h2>
+    {% if bids %}
+        <p class="muted">{{ bids|length }} bid(s) shown (max 200).</p>
+        {% for b in bids %}
+            <div class="item-row">
+                <div class="item-title">
+                    Auction #{{ b.auction_id }} – {{ b.auction.item.title }}
+                </div>
+                <div class="item-meta">
+                    Bidder: {{ b.bidder.username }} (ID {{ b.bidder_id }})
+                    · Amount: ${{ "%.2f"|format(b.bid_amount) }}
+                    {% if b.is_auto %}
+                        · <span class="bid-auto">Auto-bid</span>
+                    {% endif %}
+                </div>
+                <div class="item-meta">
+                    Placed at: {{ b.created_at }}
+                </div>
+                <form method="post" action="{{ url_for('rep_delete_bid', bid_id=b.bid_id) }}">
+                    <button type="submit">Delete Bid</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No bids match these filters.</p>
+    {% endif %}
+</div>
+{% endblock %}

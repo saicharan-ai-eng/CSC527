@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} – Item Details{% endblock %}
+
+{% block content %}
+<h1>{{ item.title }}</h1>
+<p class="muted">
+    Item #{{ item.item_id }} · Seller: {{ seller.username }}
+</p>
+
+<div class="section">
+    <h2>Item Details</h2>
+    <ul>
+        <li>Category: <span class="tag">{{ item.category }}</span></li>
+        <li>Brand: {{ item.brand or "N/A" }}</li>
+        <li>Platform: {{ item.platform or "N/A" }}</li>
+        <li>Color: {{ item.color or "N/A" }}</li>
+        <li>Condition: {{ item.item_condition }}</li>
+        <li>Base price: ${{ "%.2f"|format(item.base_price) }}</li>
+
+        {% if item.category == "console" %}
+            <li>Model: {{ item.console_model or "N/A" }}</li>
+            <li>Storage: {{ item.storage_capacity or "N/A" }}</li>
+        {% elif item.category == "game" %}
+            <li>Genre: {{ item.genre or "N/A" }}</li>
+            <li>Age rating: {{ item.age_rating or "N/A" }}</li>
+            <li>Edition: {{ item.edition or "N/A" }}</li>
+        {% elif item.category == "accessory" %}
+            <li>Accessory type: {{ item.accessory_type or "N/A" }}</li>
+            <li>Wireless: {{ "Yes" if item.wireless else "No" }}</li>
+        {% endif %}
+    </ul>
+
+    <p><strong>Description:</strong> {{ item.description or "No description provided." }}</p>
+</div>
+
+<div class="section">
+    <h2>Current Auction</h2>
+    {% if active_auction %}
+        <p>
+            <a href="{{ url_for('view_auction', auction_id=active_auction.auction_id) }}">
+                Auction #{{ active_auction.auction_id }}
+            </a>
+            — Status: {{ active_auction.status }},
+            Current price: ${{ "%.2f"|format(active_auction.current_price) }},
+            Ends at: {{ active_auction.end_time }}
+        </p>
+    {% else %}
+        <p><strong>No active auction.</strong></p>
+        <p>
+            <a href="{{ url_for('create_auction', item_id=item.item_id) }}">
+                Create auction for this item
+            </a>
+        </p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <h2>Past Auctions</h2>
+    {% if other_auctions %}
+        <ul>
+        {% for a in other_auctions %}
+            <li>
+                <a href="{{ url_for('view_auction', auction_id=a.auction_id) }}">
+                    Auction #{{ a.auction_id }}
+                </a>
+                — Status: {{ a.status }},
+                Final price:
+                {% if a.final_price %}
+                    ${{ "%.2f"|format(a.final_price) }}
+                {% else %}
+                    N/A
+                {% endif %},
+                Ended at: {{ a.closed_at or a.end_time }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No past auctions for this item yet.</p>
+    {% endif %}
+</div>
+
+<p><a href="{{ url_for('list_items') }}">Back to all items</a></p>
+{% endblock %}

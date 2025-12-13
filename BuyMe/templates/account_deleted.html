@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}My Account – BuyMe{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<div class="dialog-overlay" id="error-dialog">
+    <div class="dialog-box">
+        <h2>Could not delete account</h2>
+        <p>{{ error_message }}</p>
+        <button type="button" onclick="document.getElementById('error-dialog').style.display='none'">
+            OK
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<h1>My Account</h1>
+<p class="muted">View your account details or permanently delete your account.</p>
+
+<div class="section">
+    <h2>Account Details</h2>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    {% if user.full_name %}
+        <p><strong>Full name:</strong> {{ user.full_name }}</p>
+    {% endif %}
+    <p><strong>Role:</strong> {{ user.role }}</p>
+</div>
+
+<div class="section">
+    <h2>Delete Account</h2>
+    <p class="muted">
+        Deleting your account will remove your auctions, bids, alerts, and other data
+        associated with this account. This cannot be undone.
+    </p>
+
+    <form method="post" action="{{ url_for('account') }}">
+        <label>
+            Type <strong>DELETE</strong> to confirm
+            <input name="confirm_text" required>
+        </label>
+        <button type="submit">Delete my account</button>
+    </form>
+</div>
+{% endblock %}
